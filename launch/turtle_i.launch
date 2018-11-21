@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="id" default="0" />
+    <arg name="log_output" default="screen" />
+    <arg name="robot" default="robot_0" />
+    <arg name="prefix" default="$(arg robot)_"/>
+    <arg name="map" default="map_empty" />
+    <arg name="sim" default="false"/>
+    <arg name="initial_pose_x" default="0.0" />
+    <arg name="initial_pose_y" default="0.0" />
+    <arg name="initial_pose_a" default="0.0" />
+    <arg name="base" value="$(optenv TURTLEBOT_BASE kobuki)" />
+    <!-- create, roomba -->
+    <arg name="stacks" value="$(optenv TURTLEBOT_STACKS hexagons)" />
+    <!-- circles, hexagons -->
+    <arg name="3d_sensor" value="$(optenv TURTLEBOT_3D_SENSOR no3d)" />
+    <!-- kinect, asus_xtion_pro -->
+    <arg name="top_plate_device" value="$(optenv TURTLEBOT_TOP_PLATE_DEVICE rplidar)" doc="top plate devices types [rplidar, widowx, reactor_no_wrist, reactor_wrist, pincher, urg04lx, notop]" />
+    <arg name="launch_amcl_and_mapserver" default="false"/>
+    <arg name="launch_gmapping" default="false"/>
+    <arg name="launch_move_base" default="false"/>
+    <arg name="has_elevator" default="false"/>
+
+    <!-- robot i -->
+    <group ns="$(arg robot)">
+
+        <!-- launch platform specific nodes -->
+        <include file="$(find cpswarm_turtlebot)/launch/$(arg base).launch.xml">
+            <arg name="base" value="$(arg base)" />
+            <arg name="stacks" value="$(arg stacks)" />
+            <arg name="3d_sensor" value="$(arg 3d_sensor)" />
+            <arg name="top_plate_device" value="$(arg top_plate_device)" />
+            <arg name="prefix_frame" value="$(arg robot)_" />
+            <arg name="robot_initial_pose" value="-x $(arg initial_pose_x) -y $(arg initial_pose_y) -Y $(arg initial_pose_a)" />
+        </include>
+
+        <!-- robot state publisher: publishes robot state to tf -->
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+            <param name="publish_frequency" type="double" value="30.0" />
+        </node>
+
+        <!-- Elevator action -->
+        <include if="$(arg has_elevator)" file="$(find turtlebot_elevator)/launch/elevator_action.launch"/>
+
+        <!-- Map Server, AMCL and Move Base  -->
+        <include if="$(arg launch_move_base)" file="$(find cpswarm_turtlebot)/launch/amcl_movebase.launch">
+            <arg name="launch_amcl_and_mapserver" value="$(arg launch_amcl_and_mapserver)"/>
+            <arg name="robot_id" value="$(arg robot)"/>
+            <arg name="map_file" value="$(find cpswarm_turtlebot)/maps/$(arg map).yaml" />
+            <arg name="initial_pose_x" value="$(arg initial_pose_x)" />
+            <arg name="initial_pose_y" value="$(arg initial_pose_y)" />
+            <arg name="initial_pose_a" value="$(arg initial_pose_a)" />
+        </include>
+
+        <!--tf static to map to see all robots in rviz-->
+        <node pkg="tf" type="static_transform_publisher" name="tf_robot_map_to_map" args="0 0 0 0 0 0 /map /$(arg prefix)map 100"/>
+
+        <!-- Abstraction Library -->
+        <include file="$(find cpswarm_turtlebot)/launch/turtlebot_abstraction_library.launch">
+            <arg name="id" value="$(arg id)" />
+            <arg name="log_output" value="$(arg log_output)" />
+        </include>
+
+        <!-- SwarmROS -->
+        <node pkg="swarmros" type="bridge" name="swarmio_$(arg id)" args="-C$(find cpswarm_turtlebot)/launch/param/turtlebot_swarmros.cfg" output="$(arg log_output)" />
+
+        <!-- State Machine -->
+        <node pkg="cpswarm_turtlebot" type="turtlebot_behavior_test.py" name="machine_state_node_$(arg id)"/>
+
+    </group>
+</launch>
+

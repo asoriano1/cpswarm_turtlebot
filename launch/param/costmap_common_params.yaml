@@ -1,0 +1,10 @@
+obstacle_range: 8.0
+raytrace_range: 9.0
+
+robot_radius: 0.20  # distance a circular robot should be clear of the obstacle (kobuki: 0.18)
+
+
+obstacle_layer:
+  observation_sources:  base_front_laser
+  base_front_laser: {sensor_frame: rb1_base_front_laser_link, data_type: LaserScan, topic: scan, marking: true, clearing: true, observation_persistence: 1.0}
+

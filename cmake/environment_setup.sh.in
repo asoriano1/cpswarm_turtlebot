@@ -1,0 +1,7 @@
+#! /bin/bash
+export TURTLEBOT_BASE=kobuki
+export TURTLEBOT_STACKS=nostacks
+export TURTLEBOT_3D_SENSOR=no3d
+export TURTLEBOT_TOP_PLATE_DEVICE=rplidar
+export TURTLEBOT_SIMULATION=true
+export GAZEBO_MODEL_PATH="${GAZEBO_MODEL_PATH}:$PWD/src/cpswarm_turtlebot/worlds/models"

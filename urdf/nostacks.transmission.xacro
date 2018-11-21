@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+	<xacro:macro name="elevator_transmission" params="prefix_frame">
+	    <transmission name="${prefix_frame}plate_middle_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix_frame}plate_middle_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>  
+      <actuator name="${prefix_frame}elevator_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        <motorTorqueConstant>20</motorTorqueConstant>
+      </actuator>
+    </transmission>
+	</xacro:macro>
+
+</robot>

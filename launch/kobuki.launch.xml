@@ -1,0 +1,30 @@
+<launch>
+  <arg name="base"/>
+  <arg name="stacks"/>
+  <arg name="3d_sensor"/>
+  <arg name="top_plate_device"/>
+  <arg name="prefix_frame" default=""/>
+  <arg name="robot_initial_pose" default=""/>
+
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find cpswarm_turtlebot)/urdf/$(arg base)_$(arg stacks)_$(arg 3d_sensor)_$(arg top_plate_device).urdf.xacro' prefix_frame:=$(arg prefix_frame)" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <!-- Gazebo model spawner -->
+  <node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model" args="$(arg robot_initial_pose) -unpause -urdf -param robot_description -model $(arg prefix_frame)"/>
+
+  <rosparam file="$(find cpswarm_turtlebot)/launch/param/control.yaml" command="load"/>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="
+			  joint_read_state_controller 
+						  ">
+  </node>
+
+  <!-- Velocity muxer -->
+  <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml" />
+    <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
+  </node>
+
+  <!-- Bumper/cliff to pointcloud (not working, as it needs sensors/core messages) -->
+  <include file="$(find turtlebot_bringup)/launch/includes/kobuki/bumper2pc.launch.xml"/>
+</launch>

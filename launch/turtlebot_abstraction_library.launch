@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="id" default="1" />
+    <arg name="log_output" default="screen" />
+    <arg name="pos_type" default="global" />
+
+    <include file="$(find turtlebot_compute_cost)/launch/compute_cost.launch">
+        <arg name="id" value="$(arg id)" />
+        <arg name="log_output" value="$(arg log_output)" />
+    </include>
+
+</launch>
