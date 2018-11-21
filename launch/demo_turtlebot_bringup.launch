@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<launch>
+
+    <param name="use_sim_time" value="true"/>
+    <!--which robots -->
+    <arg name="launch_robot_a" default="true"/>
+    <arg name="launch_robot_b" default="true"/>
+    <arg name="launch_robot_c" default="true"/>
+
+    <!--args for robot a-->
+    <arg name="map_file_a" default="digisky_hangar"/>
+    <arg name="gmapping_robot_a" default="false"/>
+    <arg name="move_base_robot_a" default="true"/>
+    <arg name="amcl_and_mapserver_a" default="true"/>
+    <arg name="x_init_pose_robot_a" default="-5.0"/>
+    <arg name="y_init_pose_robot_a" default="-1.0"/>
+    <arg name="a_init_pose_robot_a" default="0.0"/>
+    <!--args for robot b-->
+    <arg name="map_file_b" default="digisky_hangar"/>
+    <arg name="gmapping_robot_b" default="false"/>
+    <arg name="move_base_robot_b" default="true"/>
+    <arg name="amcl_and_mapserver_b" default="true"/>
+    <arg name="x_init_pose_robot_b" default="-5.0"/>
+    <arg name="y_init_pose_robot_b" default="0.0"/>
+    <arg name="a_init_pose_robot_b" default="0.0"/>
+    <!--args for robot c-->
+    <arg name="map_file_c" default="digisky_hangar"/>
+    <arg name="gmapping_robot_c" default="false"/>
+    <arg name="move_base_robot_c" default="true"/>
+    <arg name="amcl_and_mapserver_c" default="true"/>
+    <arg name="x_init_pose_robot_c" default="-5.0"/>
+    <arg name="y_init_pose_robot_c" default="1.0"/>
+    <arg name="a_init_pose_robot_c" default="0.0"/>
+
+
+    <include if="$(arg launch_robot_a)" file="$(find cpswarm_turtlebot)/launch/turtle_i.launch">
+        <arg name="id" value="0"/>
+        <arg name="robot" value="robot_0"/>
+        <arg name="map" value="$(arg map_file_a)"/>
+        <arg name="initial_pose_x" value="$(arg x_init_pose_robot_a)"/>
+        <arg name="initial_pose_y" value="$(arg y_init_pose_robot_a)"/>
+        <arg name="initial_pose_a" value="$(arg a_init_pose_robot_a)"/>
+        <arg name="launch_amcl_and_mapserver" value="$(arg amcl_and_mapserver_a)"/>
+        <arg name="launch_gmapping" value="$(arg gmapping_robot_a)"/>
+        <arg name="launch_move_base" value="$(arg move_base_robot_a)"/>
+        <arg name="sim" value="true"/>
+    </include>
+
+    <include if="$(arg launch_robot_b)" file="$(find cpswarm_turtlebot)/launch/turtle_i.launch">
+        <arg name="id" value="1"/>
+        <arg name="robot" value="robot_1"/>
+        <arg name="map" value="$(arg map_file_b)"/>
+        <arg name="initial_pose_x" value="$(arg x_init_pose_robot_b)"/>
+        <arg name="initial_pose_y" value="$(arg y_init_pose_robot_b)"/>
+        <arg name="initial_pose_a" value="$(arg a_init_pose_robot_b)"/>
+        <arg name="launch_amcl_and_mapserver" value="$(arg amcl_and_mapserver_b)"/>
+        <arg name="launch_gmapping" value="$(arg gmapping_robot_b)"/>
+        <arg name="launch_move_base" value="$(arg move_base_robot_b)"/>
+        <arg name="sim" value="true"/>
+    </include>
+
+    <include if="$(arg launch_robot_c)" file="$(find cpswarm_turtlebot)/launch/turtle_i.launch">
+        <arg name="id" value="2"/>
+        <arg name="robot" value="robot_2"/>
+        <arg name="map" value="$(arg map_file_c)"/>
+        <arg name="initial_pose_x" value="$(arg x_init_pose_robot_c)"/>
+        <arg name="initial_pose_y" value="$(arg y_init_pose_robot_c)"/>
+        <arg name="initial_pose_a" value="$(arg a_init_pose_robot_c)"/>
+        <arg name="launch_amcl_and_mapserver" value="$(arg amcl_and_mapserver_c)"/>
+        <arg name="launch_gmapping" value="$(arg gmapping_robot_c)"/>
+        <arg name="launch_move_base" value="$(arg move_base_robot_c)"/>
+        <arg name="sim" value="true"/>
+    </include>
+
+</launch>
