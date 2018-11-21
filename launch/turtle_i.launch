@@ -65,7 +65,8 @@
         <node pkg="swarmros" type="bridge" name="swarmio_$(arg id)" args="-C$(find cpswarm_turtlebot)/launch/param/turtlebot_swarmros.cfg" output="$(arg log_output)" />
 
         <!-- State Machine -->
-        <node pkg="cpswarm_turtlebot" type="turtlebot_behavior_test.py" name="machine_state_node_$(arg id)"/>
+        <node if="$(arg sim)" pkg="cpswarm_turtlebot" type="turtlebot_behavior_test_sim.py" name="machine_state_node_$(arg id)"/>
+        <node unless="$(arg sim)" pkg="cpswarm_turtlebot" type="turtlebot_behavior_test.py" name="machine_state_node_$(arg id)"/>
 
     </group>
 </launch>
